@@ -7,20 +7,15 @@ fn input_generator(input: &str) -> Vec<u32> {
 
 #[aoc(day1, part1)]
 pub fn part_one(measurements: &[u32]) -> usize {
-    measurements.windows(2).fold(0, |s, c| {
-        if let [l, r, ..] = c {
-            if r > l {
-                return s + 1;
-            }
-        };
-        s
-    })
+    measurements
+        .windows(2)
+        .filter(|blob| blob[0] < blob[1])
+        .count()
 }
 
 #[aoc(day1, part2)]
 pub fn part_two(measurements: &[u32]) -> usize {
     let three_window_sums: Vec<u32> = measurements.windows(3).map(|w| w.iter().sum()).collect();
-
     part_one(&three_window_sums)
 }
 
