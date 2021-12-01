@@ -19,9 +19,7 @@ pub fn part_one(measurements: &[u32]) -> usize {
 
 #[aoc(day1, part2)]
 pub fn part_two(measurements: &[u32]) -> usize {
-    let three_window_sums: Vec<u32> = measurements.windows(3).map(|w| {
-        w.iter().sum()
-    }).collect();
+    let three_window_sums: Vec<u32> = measurements.windows(3).map(|w| w.iter().sum()).collect();
 
     part_one(&three_window_sums)
 }
