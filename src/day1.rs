@@ -5,18 +5,22 @@ fn input_generator(input: &str) -> Vec<u32> {
     input.lines().map(|line| line.parse().unwrap()).collect()
 }
 
+pub fn increasing_window_sum_count(measurements: &[u32], size: usize) -> usize {
+    measurements
+        .windows(size + 1)
+        .filter(|blob| blob[0] < blob[size])
+        .count()
+}
+
 #[aoc(day1, part1)]
 pub fn part_one(measurements: &[u32]) -> usize {
-    measurements
-        .windows(2)
-        .filter(|blob| blob[0] < blob[1])
-        .count()
+    increasing_window_sum_count(&measurements, 1)
 }
 
 #[aoc(day1, part2)]
 pub fn part_two(measurements: &[u32]) -> usize {
-    let three_window_sums: Vec<u32> = measurements.windows(3).map(|w| w.iter().sum()).collect();
-    part_one(&three_window_sums)
+    // A + B + C < B + C + D => A < D
+    increasing_window_sum_count(&measurements, 3)
 }
 
 #[cfg(test)]
