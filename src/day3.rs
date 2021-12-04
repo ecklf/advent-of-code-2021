@@ -12,7 +12,8 @@ fn input_generator(input: &str) -> Vec<Vec<u32>> {
 }
 
 pub fn bits_to_dec(bits: &Vec<u32>) -> u32 {
-        let binary_str = bits.iter()
+    let binary_str = bits
+        .iter()
         .map(|b| b.to_string())
         .collect::<Vec<String>>()
         .join("");
@@ -57,7 +58,7 @@ pub fn part_one(input: &Vec<Vec<u32>>) -> u32 {
 pub fn rating(input: Vec<Vec<u32>>, index: usize, inverse: bool) -> Vec<u32> {
     let report_length = input.len() as u32;
 
-    if report_length == 1  {
+    if report_length == 1 {
         return input.get(0).unwrap().to_owned();
     }
 
@@ -68,12 +69,12 @@ pub fn rating(input: Vec<Vec<u32>>, index: usize, inverse: bool) -> Vec<u32> {
     let search_bit: u32 = match inverse {
         true => match one_bits_count < zero_bits_count {
             true => 1,
-            false => 0
+            false => 0,
         },
         false => match one_bits_count >= zero_bits_count {
             true => 1,
-            false => 0
-        }
+            false => 0,
+        },
     };
 
     rating(
@@ -82,7 +83,7 @@ pub fn rating(input: Vec<Vec<u32>>, index: usize, inverse: bool) -> Vec<u32> {
             .filter(|r| r[index] == search_bit)
             .collect::<Vec<_>>(),
         index + 1,
-        inverse
+        inverse,
     )
 }
 
