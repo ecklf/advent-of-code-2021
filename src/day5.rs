@@ -78,131 +78,53 @@ fn input_generator(input: &str) -> Vec<Line> {
     points
 }
 
-#[aoc(day5, part1)]
-pub fn part_one(input: &Vec<Line>) -> usize {
+pub fn filter_overlaps(lines: &Vec<Line>, overlap_count: u32, with_diagonals: bool) -> usize {
     let mut vents_map = HashMap::<(i32, i32), u32>::new();
 
-    let without_diagonals = input.into_iter().filter(|l|
+    let filtered_lines = lines.into_iter().filter(|l|
         {
             match l.pitch() {
                 None => true,
                 Some(v) => match v {
                     0 => true,
+                    1 | -1 => with_diagonals,
                     _ => false
                 },
             }
         }
     ).collect::<Vec<_>>();
 
-    without_diagonals.into_iter().for_each(|l| {
+    let mut upsert_vents_map = |x: i32, y: i32| {
+        match vents_map.get_mut(&(x, y)) {
+            Some(m) => {
+                *m += 1
+            }
+            None => {
+                vents_map.insert((x, y), 1);
+            }
+        }
+    };
+
+    filtered_lines.into_iter().for_each(|l| {
         match l.pitch() {
-            // Vertical line
             None => {
                 let x = l.start.x;
                 let reverse = l.start.y > l.end.y;
-
                 let y_range = l.get_y_range(reverse);
 
                 y_range.for_each(|y| {
-                    match vents_map.get_mut(&(x, y)) {
-                        Some(m) => {
-                            *m += 1
-                        }
-                        None => {
-                            vents_map.insert((x, y), 1);
-                        }
-                    }
-                });
-            }
-            Some(_) => {
-                let y = l.start.y;
-                let reverse = l.start.x > l.end.x;
-
-                let x_range = match reverse {
-                    false => l.start.x..=l.end.x,
-                    true => l.end.x..=l.start.x
-                };
-
-                x_range.for_each(|x| {
-                    match vents_map.get_mut(&(x, y)) {
-                        Some(m) => {
-                            *m += 1
-                        }
-                        None => {
-                            vents_map.insert((x, y), 1);
-                        }
-                    }
-                });
-            }
-        }
-    });
-
-    vents_map.into_iter().filter(|(_, val)| val >= &OVERLAP).collect::<Vec<_>>().len()
-}
-
-#[aoc(day5, part2)]
-pub fn part_two(input: &Vec<Line>) -> usize {
-    let mut vents_map = HashMap::<(i32, i32), u32>::new();
-
-    let with_45_degree_diagonals = input.into_iter().filter(|l|
-        {
-            match l.pitch() {
-                None => true,
-                Some(v) => match v {
-                    0 | 1 | -1 => true,
-                    _ => false
-                },
-            }
-        }
-    ).collect::<Vec<_>>();
-
-
-    with_45_degree_diagonals.into_iter().for_each(|l| {
-        match l.pitch() {
-            // Vertical line
-            None => {
-                let x = l.start.x;
-                let reverse = l.start.y > l.end.y;
-
-                let y_range = match reverse {
-                    false => l.start.y..=l.end.y,
-                    true => l.end.y..=l.start.y
-                };
-
-                y_range.for_each(|y| {
-                    // println!("Inserting {} {}", x, y);
-                    match vents_map.get_mut(&(x, y)) {
-                        Some(m) => {
-                            *m += 1
-                        }
-                        None => {
-                            vents_map.insert((x, y), 1);
-                        }
-                    }
+                    upsert_vents_map(x, y);
                 });
             }
             Some(0) => {
                 let y = l.start.y;
                 let reverse = l.start.x > l.end.x;
-
-                let x_range = match reverse {
-                    false => l.start.x..=l.end.x,
-                    true => l.end.x..=l.start.x
-                };
+                let x_range = l.get_x_range(reverse);
 
                 x_range.for_each(|x| {
-                    // println!("Inserting {} {}", x, y);
-                    match vents_map.get_mut(&(x, y)) {
-                        Some(m) => {
-                            *m += 1
-                        }
-                        None => {
-                            vents_map.insert((x, y), 1);
-                        }
-                    }
+                    upsert_vents_map(x, y);
                 });
             }
-            // Horizontal line or Diagonal line
             Some(p) => {
                 let reverse = l.start.x > l.end.x;
                 let mut y = match reverse {
@@ -215,21 +137,24 @@ pub fn part_two(input: &Vec<Line>) -> usize {
                     true => l.end.x..=l.start.x
                 };
 
-                x_range.enumerate().for_each(|(i, x)| {
-                    match vents_map.get_mut(&(x, y)) {
-                        Some(m) => {
-                            *m += 1
-                        }
-                        None => {
-                            vents_map.insert((x, y), 1);
-                        }
-                    }
-
+                x_range.for_each(|x| {
+                    upsert_vents_map(x, y);
                     y += p;
                 });
             }
         }
     });
 
-    vents_map.into_iter().filter(|(_, val)| val >= &OVERLAP).collect::<Vec<_>>().len()
+    vents_map.into_iter().filter(|(_, val)| val >= &overlap_count).collect::<Vec<_>>().len()
+}
+
+
+#[aoc(day5, part1)]
+pub fn part_one(input: &Vec<Line>) -> usize {
+    filter_overlaps(input, OVERLAP, false)
+}
+
+#[aoc(day5, part2)]
+pub fn part_two(input: &Vec<Line>) -> usize {
+    filter_overlaps(input, OVERLAP, true)
 }
