@@ -16,17 +16,18 @@ fn input_generator(input: &str) -> BingoGame {
         .map(|l| {
             l.split(" ")
                 .filter(|c| *c != "")
-                .map(|c| {
-                    BingoField {
-                        marked: false,
-                        value: c.parse::<u32>().unwrap(),
-                    }
+                .map(|c| BingoField {
+                    marked: false,
+                    value: c.parse::<u32>().unwrap(),
                 })
                 .collect::<Vec<BingoField>>()
         })
         .collect::<Vec<_>>();
 
-    let boards = bingo_rows.chunks(5).map(|f| f.to_owned()).collect::<Vec<_>>();
+    let boards = bingo_rows
+        .chunks(5)
+        .map(|f| f.to_owned())
+        .collect::<Vec<_>>();
 
     BingoGame {
         lucky_numbers,
@@ -47,8 +48,8 @@ pub struct BingoGame {
 }
 
 fn transpose<T>(v: Vec<Vec<T>>) -> Vec<Vec<T>>
-    where
-        T: Clone,
+where
+    T: Clone,
 {
     assert!(!v.is_empty());
     (0..v[0].len())
@@ -58,17 +59,27 @@ fn transpose<T>(v: Vec<Vec<T>>) -> Vec<Vec<T>>
 
 impl BingoGame {
     fn mark_fields(&mut self, lucky_number: u32) {
-        self.boards = self.boards.iter().map(|b| b.iter().map(|r| r.iter().map(|f|
-            {
-                if lucky_number == f.value {
-                    return BingoField {
-                        value: lucky_number,
-                        marked: true,
-                    };
-                }
-                return *f;
-            }
-        ).collect::<Vec<_>>()).collect::<Vec<_>>()).collect::<Vec<_>>();
+        self.boards = self
+            .boards
+            .iter()
+            .map(|b| {
+                b.iter()
+                    .map(|r| {
+                        r.iter()
+                            .map(|f| {
+                                if lucky_number == f.value {
+                                    return BingoField {
+                                        value: lucky_number,
+                                        marked: true,
+                                    };
+                                }
+                                return *f;
+                            })
+                            .collect::<Vec<_>>()
+                    })
+                    .collect::<Vec<_>>()
+            })
+            .collect::<Vec<_>>();
     }
 
     fn calculate_score(&self, board_index: usize) -> u32 {
@@ -94,14 +105,20 @@ impl BingoGame {
             let filter_marked = |f: &&BingoField| f.marked;
 
             '_inner: for index in 0..5 {
-                let marked_rows = board_default[index].iter().filter(filter_marked).collect::<Vec<_>>();
+                let marked_rows = board_default[index]
+                    .iter()
+                    .filter(filter_marked)
+                    .collect::<Vec<_>>();
 
                 if marked_rows.len() == 5 {
                     winner_index = Some(board_index);
                     break 'outer;
                 }
 
-                let marked_cols = board_transposed[index].iter().filter(filter_marked).collect::<Vec<_>>();
+                let marked_cols = board_transposed[index]
+                    .iter()
+                    .filter(filter_marked)
+                    .collect::<Vec<_>>();
 
                 if marked_cols.len() == 5 {
                     winner_index = Some(board_index);
@@ -123,14 +140,20 @@ impl BingoGame {
             let filter_marked = |f: &&BingoField| f.marked;
 
             '_inner: for index in 0..5 {
-                let marked_rows = board_default[index].iter().filter(filter_marked).collect::<Vec<_>>();
+                let marked_rows = board_default[index]
+                    .iter()
+                    .filter(filter_marked)
+                    .collect::<Vec<_>>();
 
                 if marked_rows.len() == 5 {
                     round_winners.insert(board_index);
                     break '_inner;
                 }
 
-                let marked_cols = board_transposed[index].iter().filter(filter_marked).collect::<Vec<_>>();
+                let marked_cols = board_transposed[index]
+                    .iter()
+                    .filter(filter_marked)
+                    .collect::<Vec<_>>();
 
                 if marked_cols.len() == 5 {
                     round_winners.insert(board_index);
