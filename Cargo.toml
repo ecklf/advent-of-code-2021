@@ -9,6 +9,9 @@ publish = false
 [lib]
 bench = false
 
+[build]
+rustflags = ["-C", "target-cpu=native"]
+
 [dependencies]
 rust-crypto = "0.2.36"
 aoc-runner = "0.3.0"
