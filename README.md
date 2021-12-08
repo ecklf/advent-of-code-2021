@@ -13,6 +13,7 @@ Advent of Code[^aoc] 2021 challenges
 |  05 | 7.7336 ms | 16.861 ms |
 |  06 | 208.55 ns | 597.21 ns |
 |  07 | 27.488 us | 1.2840 us |
+|  08 | 65.968 us | 760.32 us |
 
 [^aoc]: [Advent of Code][aoc] – is an Advent calendar of small programming puzzles for a variety of skill sets and skill levels that can be solved in any programming language you like. People use them as a speed contest, interview prep, company training, university coursework, practice problems, or to challenge each other.
 
