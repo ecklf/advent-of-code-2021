@@ -23,7 +23,8 @@ pub fn part_one(positions: &[i32]) -> i32 {
 #[aoc(day7, part2)]
 pub fn part_two(positions: &[i32]) -> i32 {
     let fuel_cost = |positions: &[i32], target: i32| -> i32 {
-        positions.iter()
+        positions
+            .iter()
             .map(|&p| {
                 let d = (p - target).abs();
                 d * (d + 1) / 2
@@ -33,7 +34,10 @@ pub fn part_two(positions: &[i32]) -> i32 {
 
     let positions = positions.to_owned();
     let mean = positions.iter().sum::<i32>() / positions.len() as i32;
-    (-1..=1).map(|d| (fuel_cost(&positions, mean + d))).min().unwrap()
+    (-1..=1)
+        .map(|d| (fuel_cost(&positions, mean + d)))
+        .min()
+        .unwrap()
 }
 
 #[cfg(test)]
