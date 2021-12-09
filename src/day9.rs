@@ -103,7 +103,7 @@ impl HeightMap {
             .iter()
             .enumerate()
             .fold(Vec::<(usize, usize)>::new(), |mut s, (y, r)| {
-                r.iter().enumerate().for_each(|(x, c)| {
+                r.iter().enumerate().for_each(|(x, _c)| {
                     let is_low_point = self
                         .get_adjacent_points(&(x, y))
                         .into_iter()
@@ -114,7 +114,6 @@ impl HeightMap {
 
                     if is_low_point {
                         s.push((x, y));
-                        // result = result + (height_map.get_value_at(&(x, y)) + 1);
                     }
                 });
                 s
@@ -123,9 +122,12 @@ impl HeightMap {
 
     pub fn get_basin_size(&self, root: &(usize, usize)) -> usize {
         let rising_from = |p: &(usize, usize)| -> Vec<(usize, usize)> {
-            self.get_adjacent_points(p).into_iter().filter(|ap| {
-                self.get_value_at(p) < self.get_value_at(ap) && self.get_value_at(ap) != 9
-            }).collect::<Vec<_>>()
+            self.get_adjacent_points(p)
+                .into_iter()
+                .filter(|ap| {
+                    self.get_value_at(p) < self.get_value_at(ap) && self.get_value_at(ap) != 9
+                })
+                .collect::<Vec<_>>()
         };
 
         let mut visited = HashSet::<(usize, usize)>::new();
@@ -179,9 +181,10 @@ pub fn part_one(height_map: &HeightMap) -> u32 {
 pub fn part_two(height_map: &HeightMap) -> usize {
     let low_points = height_map.get_low_points();
 
-    let mut basin_sizes = low_points.iter().map(|lp| {
-        height_map.get_basin_size(lp)
-    }).collect::<Vec<_>>();
+    let mut basin_sizes = low_points
+        .iter()
+        .map(|lp| height_map.get_basin_size(lp))
+        .collect::<Vec<_>>();
 
     basin_sizes.sort_by(|l, r| r.cmp(l));
     let largest_three = basin_sizes.into_iter().take(3).collect::<Vec<_>>();
