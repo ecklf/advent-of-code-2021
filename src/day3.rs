@@ -11,7 +11,7 @@ fn input_generator(input: &str) -> Vec<Vec<u32>> {
     input.lines().map(to_u32).collect::<Vec<Vec<u32>>>()
 }
 
-pub fn bits_to_dec(bits: &Vec<u32>) -> u32 {
+pub fn bits_to_dec(bits: &[u32]) -> u32 {
     let binary_str = bits
         .iter()
         .map(|b| b.to_string())
@@ -20,7 +20,7 @@ pub fn bits_to_dec(bits: &Vec<u32>) -> u32 {
     u32::from_str_radix(&binary_str, 2).unwrap()
 }
 
-pub fn col_sums(input: &Vec<Vec<u32>>) -> Vec<u32> {
+pub fn col_sums(input: &[Vec<u32>]) -> Vec<u32> {
     input
         .to_owned()
         .into_iter()
@@ -29,7 +29,7 @@ pub fn col_sums(input: &Vec<Vec<u32>>) -> Vec<u32> {
 }
 
 #[aoc(day3, part1)]
-pub fn part_one(input: &Vec<Vec<u32>>) -> u32 {
+pub fn part_one(input: &[Vec<u32>]) -> u32 {
     let col_sums = col_sums(input);
     let report_length = input.len() as u32;
     let bits_count = input[0].len() as u32;
@@ -88,7 +88,7 @@ pub fn rating(input: Vec<Vec<u32>>, index: usize, inverse: bool) -> Vec<u32> {
 }
 
 #[aoc(day3, part2)]
-pub fn part_two(input: &Vec<Vec<u32>>) -> u32 {
+pub fn part_two(input: &[Vec<u32>]) -> u32 {
     let o2_rating = bits_to_dec(&rating(input.to_owned(), 0, false));
     let co2_rating = bits_to_dec(&rating(input.to_owned(), 0, true));
     o2_rating * co2_rating

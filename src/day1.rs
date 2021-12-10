@@ -14,13 +14,13 @@ pub fn increasing_window_sum_count(measurements: &[u32], size: usize) -> usize {
 
 #[aoc(day1, part1)]
 pub fn part_one(measurements: &[u32]) -> usize {
-    increasing_window_sum_count(&measurements, 1)
+    increasing_window_sum_count(measurements, 1)
 }
 
 #[aoc(day1, part2)]
 pub fn part_two(measurements: &[u32]) -> usize {
     // A + B + C < B + C + D => A < D
-    increasing_window_sum_count(&measurements, 3)
+    increasing_window_sum_count(measurements, 3)
 }
 
 #[cfg(test)]

@@ -45,9 +45,8 @@ impl Line {
 
 #[aoc_generator(day5)]
 fn input_generator(input: &str) -> Vec<Line> {
-    let lines = input.lines().collect::<Vec<&str>>();
-
-    let points = lines
+    input
+        .lines()
         .into_iter()
         .map(|l| {
             let points = l
@@ -56,7 +55,7 @@ fn input_generator(input: &str) -> Vec<Line> {
                 .into_iter()
                 .map(|p| {
                     let p = p
-                        .split(",")
+                        .split(',')
                         .collect::<Vec<_>>()
                         .into_iter()
                         .map(|p| p.parse::<i32>().unwrap())
@@ -71,24 +70,20 @@ fn input_generator(input: &str) -> Vec<Line> {
                 end: points[1],
             }
         })
-        .collect::<Vec<Line>>();
-    points
+        .collect::<Vec<Line>>()
 }
 
-pub fn filter_overlaps(lines: &Vec<Line>, overlap_count: u32, with_diagonals: bool) -> usize {
+pub fn filter_overlaps(lines: &[Line], overlap_count: u32, with_diagonals: bool) -> usize {
     let mut vents_map = HashMap::<(i32, i32), u32>::new();
 
-    let filtered_lines = lines
-        .into_iter()
-        .filter(|l| match l.pitch() {
-            None => true,
-            Some(v) => match v {
-                0 => true,
-                1 | -1 => with_diagonals,
-                _ => false,
-            },
-        })
-        .collect::<Vec<_>>();
+    let filtered_lines = lines.iter().filter(|l| match l.pitch() {
+        None => true,
+        Some(v) => match v {
+            0 => true,
+            1 | -1 => with_diagonals,
+            _ => false,
+        },
+    });
 
     let mut upsert_vents_map = |x: i32, y: i32| match vents_map.get_mut(&(x, y)) {
         Some(m) => *m += 1,
@@ -138,16 +133,15 @@ pub fn filter_overlaps(lines: &Vec<Line>, overlap_count: u32, with_diagonals: bo
     vents_map
         .into_iter()
         .filter(|(_, val)| val >= &overlap_count)
-        .collect::<Vec<_>>()
-        .len()
+        .count()
 }
 
 #[aoc(day5, part1)]
-pub fn part_one(input: &Vec<Line>) -> usize {
+pub fn part_one(input: &[Line]) -> usize {
     filter_overlaps(input, OVERLAP, false)
 }
 
 #[aoc(day5, part2)]
-pub fn part_two(input: &Vec<Line>) -> usize {
+pub fn part_two(input: &[Line]) -> usize {
     filter_overlaps(input, OVERLAP, true)
 }

@@ -34,7 +34,7 @@ fn input_generator(input: &str) -> Vec<String> {
 }
 
 #[aoc(day10, part1)]
-pub fn part_one(navigation: &Vec<String>) -> u32 {
+pub fn part_one(navigation: &[String]) -> u32 {
     navigation
         .to_owned()
         .iter()
@@ -54,7 +54,7 @@ pub fn part_one(navigation: &Vec<String>) -> u32 {
 }
 
 #[aoc(day10, part2)]
-pub fn part_two(navigation: &Vec<String>) -> i64 {
+pub fn part_two(navigation: &[String]) -> i64 {
     let mut scores = navigation
         .to_owned()
         .iter()
@@ -77,7 +77,7 @@ pub fn part_two(navigation: &Vec<String>) -> i64 {
         })
         .collect::<Vec<_>>();
 
-    scores.sort();
+    scores.sort_unstable();
     scores[scores.len() / 2]
 }
 

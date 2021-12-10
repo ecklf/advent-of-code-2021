@@ -14,11 +14,11 @@ fn input_generator(input: &str) -> Vec<Entry> {
             let entries = line.split(" | ").collect::<Vec<_>>();
             Entry {
                 patterns: entries[0]
-                    .split(" ")
+                    .split(' ')
                     .map(|s| s.to_string())
                     .collect::<Vec<_>>(),
                 output: entries[1]
-                    .split(" ")
+                    .split(' ')
                     .map(|s| s.to_string())
                     .collect::<Vec<_>>(),
             }
@@ -29,10 +29,7 @@ fn input_generator(input: &str) -> Vec<Entry> {
 
 #[aoc(day8, part1)]
 pub fn part_one(entries: &[Entry]) -> i32 {
-    let outputs = entries
-        .into_iter()
-        .map(|e| e.output.clone())
-        .collect::<Vec<_>>();
+    let outputs = entries.iter().map(|e| e.output.clone()).collect::<Vec<_>>();
 
     let mut count = 0;
 
@@ -63,8 +60,7 @@ pub fn part_two(entries: &[Entry]) -> i32 {
         pattern
             .chars()
             .filter(|c| match_pattern.contains(&c.to_string()))
-            .collect::<Vec<_>>()
-            .len()
+            .count()
     };
 
     let entries = entries.to_owned();
@@ -74,7 +70,7 @@ pub fn part_two(entries: &[Entry]) -> i32 {
         .map(|c| {
             // Determine patterns for one and four
             let mut patterns = c.patterns;
-            patterns.sort_by(|l, r| l.len().cmp(&r.len()));
+            patterns.sort_by_key(|l| l.len());
             let one_pattern = &patterns[0];
             let four_pattern = &patterns[2];
 

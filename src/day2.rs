@@ -25,8 +25,8 @@ impl FromStr for Command {
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let (command, amount) = s
-            .split_once(" ")
-            .ok_or_else(|| ParseCommandError::MissingDelimiter)?;
+            .split_once(' ')
+            .ok_or(ParseCommandError::MissingDelimiter)?;
         let amount = amount.parse::<i32>()?;
         match command {
             "up" => Ok(Command::Up(amount)),

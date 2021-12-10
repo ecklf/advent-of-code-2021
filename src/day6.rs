@@ -4,7 +4,7 @@ use aoc_runner_derive::{aoc, aoc_generator};
 fn input_generator(input: &str) -> Vec<u64> {
     let line = input.lines().take(1).collect::<Vec<_>>();
     line[0]
-        .split(",")
+        .split(',')
         .map(|f| f.parse::<u64>().unwrap())
         .collect::<Vec<u64>>()
 }

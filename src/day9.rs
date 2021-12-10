@@ -30,8 +30,8 @@ impl HeightMap {
     }
 
     pub fn get_adjacent_points(&self, point: &(usize, usize)) -> Vec<(usize, usize)> {
-        let max_x = self.width - 1 as usize;
-        let max_y = self.height - 1 as usize;
+        let max_x = self.width - 1;
+        let max_y = self.height - 1;
 
         // Corner points need 2 checks
         if point == &(0, 0) {
@@ -104,13 +104,18 @@ impl HeightMap {
             .enumerate()
             .fold(Vec::<(usize, usize)>::new(), |mut s, (y, r)| {
                 r.iter().enumerate().for_each(|(x, _c)| {
-                    let is_low_point = self
+                    // Day 9 - Part 1 : 564
+                    // generator: 80.953µs,
+                    // runner: 1.103558ms
+                    //
+                    // Day 9 - Part 2 : 1038240
+                    // generator: 51.645µs,
+                    // runner: 4.795172ms
+
+                    let is_low_point = !self
                         .get_adjacent_points(&(x, y))
                         .into_iter()
-                        .filter(|ap| self.get_value_at(&(x, y)) >= self.get_value_at(ap))
-                        .collect::<Vec<_>>()
-                        .len()
-                        == 0;
+                        .any(|ap| self.get_value_at(&(x, y)) >= self.get_value_at(&ap));
 
                     if is_low_point {
                         s.push((x, y));
@@ -132,9 +137,9 @@ impl HeightMap {
 
         let mut visited = HashSet::<(usize, usize)>::new();
         let mut queue = VecDeque::<(usize, usize)>::new();
-        queue.push_back(root.clone());
+        queue.push_back(*root);
 
-        while queue.len() != 0 {
+        while !queue.is_empty() {
             let queue_item = queue.pop_front().unwrap();
             visited.insert(queue_item);
 
@@ -159,8 +164,8 @@ fn input_generator(input: &str) -> HeightMap {
         })
         .collect::<Vec<_>>();
 
-    let width = data[0].len().clone();
-    let height = data.len().clone();
+    let width = data[0].len();
+    let height = data.len();
 
     HeightMap {
         data,
@@ -187,7 +192,9 @@ pub fn part_two(height_map: &HeightMap) -> usize {
         .collect::<Vec<_>>();
 
     basin_sizes.sort_by(|l, r| r.cmp(l));
-    let largest_three = basin_sizes.into_iter().take(3).collect::<Vec<_>>();
-
-    largest_three.into_iter().reduce(|l, r| l * r).unwrap()
+    basin_sizes
+        .into_iter()
+        .take(3)
+        .reduce(|l, r| l * r)
+        .unwrap()
 }

@@ -4,7 +4,7 @@ use aoc_runner_derive::{aoc, aoc_generator};
 fn input_generator(input: &str) -> Vec<i32> {
     let line = input.lines().take(1).collect::<Vec<_>>();
     line[0]
-        .split(",")
+        .split(',')
         .map(|f| f.parse::<i32>().unwrap())
         .collect::<Vec<i32>>()
 }
@@ -12,8 +12,8 @@ fn input_generator(input: &str) -> Vec<i32> {
 #[aoc(day7, part1)]
 pub fn part_one(positions: &[i32]) -> i32 {
     let mut positions = positions.to_owned();
-    positions.sort();
-    let median = positions.iter().nth(positions.len() / 2).unwrap();
+    positions.sort_unstable();
+    let median = positions.get(positions.len() / 2).unwrap();
     positions.iter().fold(0, |mut s, x| {
         s += (x - median).abs();
         s

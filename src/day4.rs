@@ -6,16 +6,16 @@ fn input_generator(input: &str) -> BingoGame {
     let mut lines = input.lines().collect::<Vec<_>>();
     let lucky_numbers = lines
         .remove(0)
-        .split(",")
+        .split(',')
         .map(|c| c.parse::<u32>().unwrap())
         .collect::<Vec<_>>();
 
     let bingo_rows = lines
         .into_iter()
-        .filter(|l| *l != "")
+        .filter(|l| !l.is_empty())
         .map(|l| {
-            l.split(" ")
-                .filter(|c| *c != "")
+            l.split(' ')
+                .filter(|c| !c.is_empty())
                 .map(|c| BingoField {
                     marked: false,
                     value: c.parse::<u32>().unwrap(),
@@ -73,7 +73,7 @@ impl BingoGame {
                                         marked: true,
                                     };
                                 }
-                                return *f;
+                                *f
                             })
                             .collect::<Vec<_>>()
                     })
@@ -105,22 +105,16 @@ impl BingoGame {
             let filter_marked = |f: &&BingoField| f.marked;
 
             '_inner: for index in 0..5 {
-                let marked_rows = board_default[index]
-                    .iter()
-                    .filter(filter_marked)
-                    .collect::<Vec<_>>();
+                let marked_rows = board_default[index].iter().filter(filter_marked).count();
 
-                if marked_rows.len() == 5 {
+                if marked_rows == 5 {
                     winner_index = Some(board_index);
                     break 'outer;
                 }
 
-                let marked_cols = board_transposed[index]
-                    .iter()
-                    .filter(filter_marked)
-                    .collect::<Vec<_>>();
+                let marked_cols = board_transposed[index].iter().filter(filter_marked).count();
 
-                if marked_cols.len() == 5 {
+                if marked_cols == 5 {
                     winner_index = Some(board_index);
                     break 'outer;
                 }
@@ -140,22 +134,16 @@ impl BingoGame {
             let filter_marked = |f: &&BingoField| f.marked;
 
             '_inner: for index in 0..5 {
-                let marked_rows = board_default[index]
-                    .iter()
-                    .filter(filter_marked)
-                    .collect::<Vec<_>>();
+                let marked_rows = board_default[index].iter().filter(filter_marked).count();
 
-                if marked_rows.len() == 5 {
+                if marked_rows == 5 {
                     round_winners.insert(board_index);
                     break '_inner;
                 }
 
-                let marked_cols = board_transposed[index]
-                    .iter()
-                    .filter(filter_marked)
-                    .collect::<Vec<_>>();
+                let marked_cols = board_transposed[index].iter().filter(filter_marked).count();
 
-                if marked_cols.len() == 5 {
+                if marked_cols == 5 {
                     round_winners.insert(board_index);
                     break '_inner;
                 }
@@ -211,7 +199,7 @@ pub fn part_two(game: &BingoGame) -> Option<u32> {
             if let Some(pr) = prev_result {
                 let mut result = draw_result.difference(&pr);
 
-                let score = squid_game.calculate_score(result.nth(0).unwrap().clone());
+                let score = squid_game.calculate_score(*result.next().unwrap());
                 final_score = Some(score * ln);
             }
 
